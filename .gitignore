@@ -1,0 +1,4 @@
+vendor
+db/example.db
+composer.phar
+report

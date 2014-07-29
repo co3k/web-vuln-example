@@ -1,0 +1,87 @@
+{% extends "_base.twig" %}
+
+{% block content %}
+<title>Home</title>
+
+<div class="pure-menu pure-menu-fixed">
+<h1>VOYAtter</h1>
+</div>
+
+<div id="activities">
+<div class="compose-container">
+<div class="compose">
+<ul class="compose-menu">
+    <li v-on="click: mode='tweet'" v-class="active: mode=='tweet'">ぼやき</li>
+    <li v-on="click: mode='stamp'" v-class="active: mode=='stamp'">スタンプ</li>
+</ul>
+
+<form id="activity-form" action="/activity" method="post" v-on="submit: submit">
+    <div v-if="mode=='tweet'">
+        <textarea name="body" placeholder="例) 今何してますか？　忙しいですか？">{{msg}}</textarea>
+        <p><input type="submit" value="ぼやく" /></p>
+    </div>
+
+    <div v-if="mode=='stamp'">
+        <input type="hidden" name="stamp" value="" />
+        <ul class="stamp">
+        {% for stamp in stamps %}
+        <li v-on="click: postStamp($event, '{{stamp}}')">{{stamp}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</form>
+{% raw %}
+<p v-if="error">{{error}}</p>
+{% endraw %}
+
+</div>
+</div>
+
+<div class="list">
+<p>size:
+<select onchange="location.href='/?size='+this.value">
+{% for i in range(20, 100, 20) %}
+<option value={{i}} {% if i == size %}selected{% endif %}>{{i}}</option>
+{% endfor %}
+</select>
+</p>
+
+{% if activities %}
+{% raw %}
+<ul class="activity">
+<li v-repeat="activities"><ul>
+<li class="image"><img width=64 height=64 v-attr="src: '/profile/{{username}}.jpg'" /></li>
+<li class="username">{{username}}</li>
+<li class="body" v-if="body">{{body}}</li>
+<li class="stamp" v-if="stamp">{{{formatStamp(stamp)}}}</li>
+</ul></li>
+</ul>
+
+<div id="footer">
+<ul class="pager pure-paginator">
+<li v-if="next"><a v-on="click: paging($event, -1)" href=/?page={{afterPage(-1)}}&size={{size}}>&#171;</a></li>
+<li>Page {{page}} / {{maxPage}}</li>
+<li v-if="prev"><a v-on="click: paging($event, 1)" href=/?page={{afterPage(1)}}&size={{size}}>&#187;</a></li>
+</ul>
+</div>
+
+{% endraw %}
+{% else %}
+<p>No activities in this site</p>
+{% endif %}
+</div>
+</div>
+
+<script src="/jquery.js"></script>
+<script src="/vue.js"></script>
+<script>
+var data = {mode: "tweet", maxPage: "{{maxPage}}", prev: {{prev ? 'true' : 'false'}}, next: {{next ? 'true' : 'false'}}, size: "{{size}}", page: "{{page}}"};
+data['activities'] = [
+{% for activity in activities %}
+    {'username': '{{activity.username}}', 'body': '{{activity.body|replace({"\\": ""})}}', 'stamp': '{{activity.stamp}}'}
+    {% if not loop.last %},{% endif %}
+{% endfor %}
+];
+</script>
+<script src="/activity.js"></script>
+{% endblock %}
