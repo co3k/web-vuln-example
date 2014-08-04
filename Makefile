@@ -1,6 +1,6 @@
-PHP=$(shell which php)
-HOST=localhost
-PORT=8888
+PHP?=$(shell which php)
+SERVER_HOST?=localhost
+SERVER_PORT?=8888
 
 all:
 
@@ -10,7 +10,7 @@ install:
 	$(PHP) ./bin/init-db.php
 
 server:
-	$(PHP) -S $(HOST):$(PORT) -t web
+	$(PHP) -S $(SERVER_HOST):$(SERVER_PORT) -t web
 
 test:
 	$(PHP) ./vendor/bin/phpunit --coverage-html ./report
