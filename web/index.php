@@ -29,6 +29,8 @@ $app['controller.login'] = $app->share(function() use ($app) { return new Exampl
 $app['controller.activity'] = $app->share(function() use ($app) { return new Example\Controller\ActivityController($app); });
 
 $app->before(new Example\Middleware\RequireLogin($app));
+$app->after(new Example\Middleware\DisableXSSFilter($app));
+
 $app->get('/', 'controller.activity:home');
 $app->post('/activity', 'controller.activity:post');
 $app->get('/login', 'controller.login:loginForm');
