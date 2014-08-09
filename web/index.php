@@ -10,23 +10,7 @@
  */
 
 require_once __DIR__.'/../vendor/autoload.php';
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-
-$app = new Silex\Application();
-$app->register(new Silex\Provider\SessionServiceProvider());
-$app->register(new Silex\Provider\TwigServiceProvider(), [
-    'twig.path' => __DIR__.'/../views',
-]);
-$app->register(new Silex\Provider\ServiceControllerServiceProvider());
-
-require_once __DIR__.'/../config.php';
-
-$app['repository.user'] = function ($app) { return new Example\Repository\User($app['db']); };
-$app['repository.activity'] = function ($app) { return new Example\Repository\Activity($app['db']); };
-$app['controller.login'] = $app->share(function() use ($app) { return new Example\Controller\LoginController($app); });
-$app['controller.activity'] = $app->share(function() use ($app) { return new Example\Controller\ActivityController($app); });
+$app = require __DIR__.'/../config.php';
 
 $app->before(new Example\Middleware\RequireLogin($app));
 $app->after(new Example\Middleware\DisableXSSFilter($app));
