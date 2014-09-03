@@ -14,6 +14,7 @@ $app = require __DIR__.'/../config.php';
 
 $app->before(new Example\Middleware\RequireLogin($app));
 $app->after(new Example\Middleware\DisableXSSFilter($app));
+$app->after(new Example\Middleware\AddXFrameOptions($app));
 
 $app->get('/', 'controller.activity:home');
 $app->post('/activity', 'controller.activity:post');
