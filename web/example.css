@@ -120,6 +120,12 @@ body {
     margin-left: 40px;
 }
 
+.pure-menu h1 a {
+    margin: 0;
+    font-size: 12px;
+    display: inline;
+}
+
 #footer {
     position: fixed;
     bottom: 0px;

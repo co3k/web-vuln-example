@@ -19,5 +19,6 @@ $app->get('/', 'controller.activity:home');
 $app->post('/activity', 'controller.activity:post');
 $app->get('/login', 'controller.login:loginForm');
 $app->post('/login', 'controller.login:authenticate');
+$app->post('/logout', 'controller.login:deauthenticate');
 
 $app->run();

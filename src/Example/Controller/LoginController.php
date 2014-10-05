@@ -50,4 +50,11 @@ class LoginController
 
         return $this->app->redirect('/');
     }
+
+    public function deauthenticate()
+    {
+        $this->app['session']->invalidate();
+
+        return $this->app->redirect('/');
+    }
 }
