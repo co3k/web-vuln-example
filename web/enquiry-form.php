@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: text/html;charset=utf-8');
+header('X-XSS-Protection: 0');
 
 if ('POST' === $_SERVER['REQUEST_METHOD']) {
     echo '<p>問い合わせ内容を送信しました。</p>';
