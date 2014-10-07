@@ -47,6 +47,7 @@ class LoginController
         }
 
         $this->app['session']->set('user_id', $userId);
+        $this->app['session']->set('username', $username);
 
         return $this->app->redirect('/');
     }

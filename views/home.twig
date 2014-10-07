@@ -4,7 +4,7 @@
 <title>Home</title>
 
 <div class="pure-menu pure-menu-fixed">
-<h1>VOYAtter <span class="logout"><a href="/logout" onclick="$.post('/logout'); location.href='/login'; return false;">[logout]</a></span></h1>
+<h1>VOYAtter <span class="note">{{app.session.get('username')}} さんとしてログインしています　<a href="/logout" onclick="$.post('/logout'); location.href='/login'; return false;">[logout]</a></span></h1>
 </div>
 
 <div id="activities">
