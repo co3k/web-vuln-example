@@ -36,3 +36,40 @@ $ SERVER_HOST=127.0.0.1 SERVER_PORT=8889 make server
 * 「ぼやき」のタイムライン表示における XSS 脆弱性
 * 「ぼやき」の投稿フォームにおける XSS 脆弱性
 * 「ぼやき」の投稿処理における CSRF 脆弱性
+
+## このアプリケーションの構成について
+
+### 主要ファイル、ディレクトリ構成
+
+以下のようなディレクトリ構成を取っています (ここに書かれていないものは気にしなくてよいです)。
+
+```
+.
+├── src …… ライブラリ類 (ディレクトリ構成は PSR-4 準拠 / see also: http://www.php-fig.org/psr/psr-4/)
+│   └── Example
+│        ├── Controller
+│        │   ├── ActivityController.php …… アクティビティ系のリクエストを扱うコントローラ (ホーム画面も含まれる)
+│        │   └── LoginController.php …… ログイン系のリクエストを扱うコントローラ
+│        └── Repository
+│             ├── Activity.php …… アクティビティ系のデータを操作するクラス
+│             └── User.php …… ユーザ系のデータを操作するクラス
+├── tests …… テスト (気にしてほしいけれども気にしなくてよい)
+├── views …… テンプレートファイル群
+│   ├── _base.twig …… 全ページ共通で読み込まれるテンプレートファイル
+│   ├── home.twig …… ホーム画面のテンプレートファイル
+│   └── login.twig …… ログイン画面のテンプレートファイル
+└── web …… Web 公開用ディレクトリ
+    ├── activity.js …… ホーム画面で表示されるアクティビティ関連のライブラリ
+    ├── enquiry-form.php …… お問い合わせフォーム (このページだけなぜかわざとらしく素の PHP で書かれていて怪しいですね)
+    └── index.php …… すべてのリクエストの入り口となるフロントコントローラ
+```
+
+### サンプルアプリケーションの動作フロー
+
+* すべてのリクエストは `web/index.php` で受けることになります。 `web/index.php` には受け付けるべきリクエストのパターン (リクエストメソッド、パス名) が定義されており、それぞれの定義に一致するリクエストであった場合は、あらかじめ決められたメソッドにリクエストを処理させます
+* たとえば `$app->get('/', 'controller.activity:home')` は、 `GET` メソッドで `/` に対してリクエストした場合に、 `controller.activity:home` にて表されるメソッドにその処理を担当させることになります。 `controller.activity` はクラスを表し、 `:` の後に続く `home` はそのクラスのインスタンスメソッド名と一致します。 `controller.activity` および `controller.login` がどのクラスであるかは `config.php` に定義されており、それぞれ `Example\Controller\ActivityController` と `Example\Controller\LoginController`となります
+* したがって `GET / HTTP/1.1` は `$app->get('/', 'controller.activity:home')` によって定義されたとおり、 `Example\Controller\ActivityController` クラスのインスタンスの `home()` メソッドによって処理されることになります
+* リクエスト契機で呼び出されるコントローラの各メソッドではレスポンスを返すことのみが決まっており、それ以外にどのような処理をおこなうのかは未定義 (各メソッドに委ねられている) ですが、主に以下のようなことをおこなっています
+    * リクエストパラメータに応じた任意の処理
+    * SQLite の DB 上のデータを操作 (`Example\Repository\User` や `Example\Repository\Activity` のメソッドによっておこなっています)
+    * レスポンスボディとなるべき HTML を構築 (Twig によって `views/` 以下のテンプレートファイルを読み込むことによって実現しています。読み込むべきテンプレートファイル名は都度コントローラ側にて指定されています)
