@@ -29,6 +29,7 @@ class ActivityController
 
     public function home()
     {
+        $this->setToken();
         $params = $this->app['request']->query;
 
         $page = $params->get('page', 1);
@@ -60,6 +61,10 @@ class ActivityController
 
     public function post()
     {
+        var_dump("adsf");
+        exit;
+
+        $this->checkToken();
         $params = $this->app['request']->request;
         $stamp = $params->get('stamp');
         $body = $params->get('body', '');
@@ -81,6 +86,18 @@ class ActivityController
             return $this->app->json($result);
         } else {
             return $this->app->redirect('/');
+        }
+    }
+
+    function setToken(){
+        $token = sha1(uniqid(mt_rand(), true));
+        $_SESSION['token'] = $token;
+    }
+
+    function checkToken(){
+        if(empty($_SESSIOIN['token']) || ($_SESSION['token'] != $_POST['token'])){
+            echo '不正なPOST';
+            exit;
         }
     }
 }
