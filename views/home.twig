@@ -18,6 +18,7 @@
 <form id="activity-form" action="/activity" method="post" v-on="submit: submit">
     <div v-if="mode=='tweet'">
         <textarea name="body" placeholder="例) 今何してますか？　忙しいですか？">{{msg}}</textarea>
+        <p><input type="text" name="token" value="{{token}}" hidden/></p>
         <p><input type="submit" value="ぼやく" /></p>
     </div>
 
