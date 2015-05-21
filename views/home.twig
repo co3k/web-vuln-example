@@ -19,6 +19,7 @@
     <div v-if="mode=='tweet'">
         <textarea name="body" placeholder="例) 今何してますか？　忙しいですか？">{{msg}}</textarea>
         <p><input type="submit" value="ぼやく" /></p>
+        <input type="hidden" name="token" value="{{token}}" />
     </div>
 
     <div v-if="mode=='stamp'">
