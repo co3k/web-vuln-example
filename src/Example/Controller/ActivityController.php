@@ -37,6 +37,9 @@ class ActivityController
             $size = 20;
         }
 
+        $token = rand();
+        $this->app['session']->set('token', $token);
+
         $pagerfanta = $this->app['repository.activity']->fetchItems($size, $page);
         $data = [
             'activities' => $pagerfanta->getCurrentPageResults(),
@@ -49,6 +52,8 @@ class ActivityController
              // "prev" and "next" are reversed meanings here
             'prev' => $pagerfanta->hasNextPage(),
             'next' => $pagerfanta->hasPreviousPage(),
+            'token' => $token,
+            'token_session' => $this->app['session']->get('token')
         ];
 
         if ($this->app['request']->isXmlHttpRequest()) {
@@ -63,6 +68,12 @@ class ActivityController
         $params = $this->app['request']->request;
         $stamp = $params->get('stamp');
         $body = $params->get('body', '');
+        $token = $params->get('token');
+
+        // ? !== だと常に弾かれた..
+        if ($token != $this->app['session']->get('token')){
+            return $this->app->redirect('/');
+        }
 
         if ($stamp) {
             $body = '';  // stamp activity should be an empty body
