@@ -49,6 +49,7 @@ class ActivityController
              // "prev" and "next" are reversed meanings here
             'prev' => $pagerfanta->hasNextPage(),
             'next' => $pagerfanta->hasPreviousPage(),
+            'token' => md5("yo" . $this->app['session']->get('user_id')),
         ];
 
         if ($this->app['request']->isXmlHttpRequest()) {
@@ -63,6 +64,7 @@ class ActivityController
         $params = $this->app['request']->request;
         $stamp = $params->get('stamp');
         $body = $params->get('body', '');
+        $token = $params->get('token');
 
         if ($stamp) {
             $body = '';  // stamp activity should be an empty body
@@ -74,7 +76,11 @@ class ActivityController
             $this->abortByValidationError('You cannot post empty body.');
         }
 
-        $resultId = $this->app['repository.activity']->create($body, $stamp, $this->app['session']->get('user_id'));
+        if ($token === md5("yo" . $this->app["session"]->get('user_id'))) {
+            $resultId = $this->app['repository.activity']->create($body, $stamp, $this->app['session']->get('user_id'));
+        } else {
+            $this->abortByValidationError('You cannot post.');
+        }
         if ($this->app['request']->isXmlHttpRequest()) {
             $result = $this->app['repository.activity']->findById($resultId);
 
