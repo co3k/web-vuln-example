@@ -49,6 +49,7 @@ class ActivityController
              // "prev" and "next" are reversed meanings here
             'prev' => $pagerfanta->hasNextPage(),
             'next' => $pagerfanta->hasPreviousPage(),
+            'token' => '12345678',
         ];
 
         if ($this->app['request']->isXmlHttpRequest()) {
@@ -63,22 +64,27 @@ class ActivityController
         $params = $this->app['request']->request;
         $stamp = $params->get('stamp');
         $body = $params->get('body', '');
+        $token = $params->get('token');
 
-        if ($stamp) {
-            $body = '';  // stamp activity should be an empty body
+        if ($token === "12345678") {
+            if ($stamp) {
+                $body = '';  // stamp activity should be an empty body
 
-            if (!in_array($stamp, $this->app['repository.activity']->listAvailableStamps())) {
-                $this->abortByValidationError('The invalid stamp is specified.');
+                if (!in_array($stamp, $this->app['repository.activity']->listAvailableStamps())) {
+                    $this->abortByValidationError('The invalid stamp is specified.');
+                }
+            } elseif ('' === $body) {
+                $this->abortByValidationError('You cannot post empty body.');
             }
-        } elseif ('' === $body) {
-            $this->abortByValidationError('You cannot post empty body.');
-        }
 
-        $resultId = $this->app['repository.activity']->create($body, $stamp, $this->app['session']->get('user_id'));
-        if ($this->app['request']->isXmlHttpRequest()) {
-            $result = $this->app['repository.activity']->findById($resultId);
+            $resultId = $this->app['repository.activity']->create($body, $stamp, $this->app['session']->get('user_id'));
+            if ($this->app['request']->isXmlHttpRequest()) {
+                $result = $this->app['repository.activity']->findById($resultId);
 
-            return $this->app->json($result);
+                return $this->app->json($result);
+            } else {
+                return $this->app->redirect('/');
+            }
         } else {
             return $this->app->redirect('/');
         }
