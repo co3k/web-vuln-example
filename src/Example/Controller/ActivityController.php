@@ -49,7 +49,10 @@ class ActivityController
              // "prev" and "next" are reversed meanings here
             'prev' => $pagerfanta->hasNextPage(),
             'next' => $pagerfanta->hasPreviousPage(),
+            'csrf_token' => uniqid()
         ];
+
+        $this->app['session']->set('csrf_token', $data['csrf_token']);
 
         if ($this->app['request']->isXmlHttpRequest()) {
             return $this->app->json($data);
@@ -72,6 +75,8 @@ class ActivityController
             }
         } elseif ('' === $body) {
             $this->abortByValidationError('You cannot post empty body.');
+        } elseif ($this->app['session']->get('csrf_token') !== $params->get('csrf_token')) {
+            $this->abortByValidationError('Bye bye!');
         }
 
         $resultId = $this->app['repository.activity']->create($body, $stamp, $this->app['session']->get('user_id'));
