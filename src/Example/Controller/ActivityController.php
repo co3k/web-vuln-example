@@ -52,8 +52,7 @@ class ActivityController
              // "prev" and "next" are reversed meanings here
             'prev' => $pagerfanta->hasNextPage(),
             'next' => $pagerfanta->hasPreviousPage(),
-            'token' => $token,
-            'token_session' => $this->app['session']->get('token')
+            'token' => $token
         ];
 
         if ($this->app['request']->isXmlHttpRequest()) {

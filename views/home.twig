@@ -15,8 +15,6 @@
     <li v-on="click: mode='stamp'" v-class="active: mode=='stamp'">スタンプ</li>
 </ul>
 
-<h1>{{token}}</h1>
-<h1>{{token_session}}</h1>
 <form id="activity-form" action="/activity" method="post" v-on="submit: submit">
     <div v-if="mode=='tweet'">
         <textarea name="body" placeholder="例) 今何してますか？　忙しいですか？">{{msg}}</textarea>
