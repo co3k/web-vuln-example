@@ -75,7 +75,7 @@
 <script src="/jquery.js"></script>
 <script src="/vue.js"></script>
 <script>
-var data = {mode: "tweet", maxPage: "{{maxPage}}", prev: {{prev ? 'true' : 'false'}}, next: {{next ? 'true' : 'false'}}, size: "{{size}}", page: "{{page}}"};
+var data = {mode: "tweet", maxPage: "{{maxPage}}", prev: {{prev ? 'true' : 'false'}}, next: {{next ? 'true' : 'false'}}, size: "{{size|e('js')}}", page: "{{page|e('js')}}"};
 data['activities'] = [
 {% for activity in activities %}
     {'username': '{{activity.username}}', 'body': '{{activity.body|replace({"\\": ""})}}', 'stamp': '{{activity.stamp}}'}
