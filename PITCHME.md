@@ -10,7 +10,8 @@ Tamrin007(Shun Tamura)
 
 #VSLIDE
 
-ユーザ名にスペースを含めて送信すると、スペース以降の文字が `input` タグの属性として埋め込まれる
+ユーザ名にスペースを含めて送信すると、  
+スペース以降の文字が `input` タグの属性として埋め込まれる
 
 #VSLIDE
 
@@ -37,7 +38,9 @@ Tamrin007(Shun Tamura)
 
 ## Q2. SQL Injection
 
-適当な文字をユーザ名として入力すると、フレームワークのエラー画面が現れ、どのようにユーザ入力から SQL を組み立てているか分かる
+適当な文字をユーザ名として入力すると、  
+フレームワークのエラー画面が現れ、  
+どのようにユーザ入力から SQL を組み立てているか分かる
 
 ![sql_debug](pitch_img/sql_debug.png)
 
@@ -62,6 +65,8 @@ SELECT u.id FROM example_user u
 WHERE username = 'co3k'
 OR 'a'='a' AND password = 'hash' LIMIT 1;
 ```
+
+#VSLIDE
 
 ### Result
 
